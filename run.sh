@@ -2,5 +2,7 @@
 
 subber /usr/src/app/Auth.json
 
-python -u /usr/src/app/upd_schedule.py &
-python -u /usr/src/app/youtube-dl-server.py 
+sudo ss-local -c /ssconfig/config.json &
+
+python3 -u /usr/src/app/upd_schedule.py &
+python3 -u /usr/src/app/youtube-dl-server.py 

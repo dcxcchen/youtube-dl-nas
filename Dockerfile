@@ -1,28 +1,23 @@
 # youtube-dl-nas Server Dockerfile
 # https://github.com/hyeonsangjeon/youtube-dl-nas.git
 
-FROM python:3-onbuild
+FROM ubuntu:18.04
 LABEL maintainer="wingnut0310 <wingnut0310@gmail.com>"
 
 # Install ffmpeg.
-#https://unix.stackexchange.com/questions/508724/failed-to-fetch-jessie-backports-repository
-RUN echo "deb [check-valid-until=no] http://cdn-fastly.deb.debian.org/debian jessie main" > /etc/apt/sources.list.d/jessie.list
-RUN echo "deb [check-valid-until=no] http://archive.debian.org/debian jessie-backports main" > /etc/apt/sources.list.d/jessie-backports.list
-RUN sed -i '/deb http:\/\/deb.debian.org\/debian jessie-updates main/d' /etc/apt/sources.list
-RUN apt-get -o Acquire::Check-Valid-Until=false update
-RUN apt-get install -y libav-tools vim dos2unix && \
-    rm -rf /var/lib/apt/lists/*
-
+RUN apt update
+RUN apt install -y ffmpeg vim dos2unix shadowsocks-libev python3 python3-pip python3-gevent
 
 COPY /subber /usr/bin/subber 
 COPY /run.sh /
+COPY . /usr/src/app/
 RUN chmod +x /usr/bin/subber && \
      dos2unix /usr/bin/subber && \
      ln -s /usr/src/app/downfolder / && \
      chmod +x /run.sh && \
      dos2unix /run.sh
 
-RUN pip install -U youtube-dl
+RUN pip3 install -r /usr/src/app/requirements.txt
 
 EXPOSE 8080
 
